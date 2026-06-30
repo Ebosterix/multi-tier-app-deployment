@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi Tier App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f7f7f7;
+    }
+    .card {
+      max-width: 700px;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+    }
+    pre {
+      background: #eee;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Frontend UI</h1>
+    <p>Send a message to the API and load saved messages from MySQL.</p>
+
+    <input id="msg" placeholder="Type a message" />
+    <button onclick="sendData()">Send</button>
+    <button onclick="loadData()">Load Messages</button>
+
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    const API = "http://YOUR_EC2_PUBLIC_IP:5000";
+
+    async function sendData() {
+      const message = document.getElementById("msg").value;
+      const res = await fetch(API + "/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+      const data = await res.json();
+      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function loadData() {
+      const res = await fetch(API + "/data");
+      const data = await res.json();
+      document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
